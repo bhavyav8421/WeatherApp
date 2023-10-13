@@ -26,10 +26,4 @@ class WeatherRepository @Inject constructor(private val weatherService : Weather
         }
     }
 
-    fun getforecastOfCity(cityName: String): Flow<Forecast> {
-        return flow {
-            emit(weatherService.getForecastByCity(cityName))
-        }
-    }
-
 }

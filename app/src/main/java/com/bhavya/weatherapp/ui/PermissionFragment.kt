@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.fragment.app.Fragment
-import com.example.weatherapp.model.WeatherInfo
 import util.hasPermission
 
 abstract class PermissionFragment:Fragment() {

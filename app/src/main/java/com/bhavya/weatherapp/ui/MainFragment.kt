@@ -2,23 +2,18 @@ package com.bhavya.weatherapp.ui
 
 import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import com.bhavya.weatherapp.data.ParsedWeatherData
 import android.view.View
-import androidx.appcompat.widget.SearchView
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bhavya.weatherapp.UiState
 import com.bhavya.weatherapp.WeatherApplication
-import com.bhavya.weatherapp.databinding.MainFragment2Binding
 import com.bhavya.weatherapp.databinding.MainFragmentBinding
 import com.bhavya.weatherapp.di.component.DaggerActivityComponent
 import com.bhavya.weatherapp.di.module.ActivityModule
@@ -26,14 +21,9 @@ import com.bhavya.weatherapp.viewmodel.WeatherViewModel
 import com.bumptech.glide.Glide
 import com.example.weatherapp.model.WeatherInfo
 import kotlinx.coroutines.launch
-import util.getFormatedDateTime
-import util.getFormatedTime
+import util.SharedPrefs
 import util.hasPermission
 import javax.inject.Inject
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import util.SharedPrefs
 
 class MainFragment :PermissionFragment() {
     private lateinit var binding: MainFragmentBinding;

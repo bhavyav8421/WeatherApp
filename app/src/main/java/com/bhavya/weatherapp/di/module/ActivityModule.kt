@@ -8,11 +8,8 @@ import com.bhavya.weatherapp.di.ActivityContext
 import com.bhavya.weatherapp.repository.WeatherRepository
 import com.bhavya.weatherapp.viewmodel.ViewModelProviderFactory
 import com.bhavya.weatherapp.viewmodel.WeatherViewModel
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 class ActivityModule(private val activity: AppCompatActivity) {

@@ -1,22 +1,16 @@
 package com.bhavya.weatherapp.viewmodel
 
-import android.app.SearchManager
 import android.location.Location
-import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bhavya.weatherapp.UiState
-import com.bhavya.weatherapp.WeatherApplication
 import com.bhavya.weatherapp.api.LocationApi
-import com.bhavya.weatherapp.data.ParsedWeatherData
 import com.bhavya.weatherapp.repository.WeatherRepository
-import com.bhavya.weatherapp.state.LocationState
 import com.example.weatherapp.model.WeatherInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import util.SharedPrefs
 import javax.inject.Inject
 
 class WeatherViewModel @Inject constructor(private val weatherRepository : WeatherRepository, private val locationApi: LocationApi) : ViewModel() {
