@@ -3,10 +3,12 @@ package com.bhavya.weatherapp.ui
 import android.Manifest
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Lifecycle
@@ -14,20 +16,20 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bhavya.weatherapp.UiState
 import com.bhavya.weatherapp.WeatherApplication
-import com.bhavya.weatherapp.databinding.MainFragmentBinding
+import com.bhavya.weatherapp.databinding.MainFragment3Binding
 import com.bhavya.weatherapp.di.component.DaggerActivityComponent
 import com.bhavya.weatherapp.di.module.ActivityModule
 import com.bhavya.weatherapp.viewmodel.WeatherViewModel
 import com.bumptech.glide.Glide
 import com.example.weatherapp.model.WeatherInfo
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import util.SharedPrefs
 import util.hasPermission
 import javax.inject.Inject
 
-class MainFragment :PermissionFragment() {
-    private lateinit var binding: MainFragmentBinding;
-
+class MainFragment :PermissionFragment(){
+    private lateinit var binding: MainFragment3Binding;
     @Inject
     lateinit var weatherViewModel: WeatherViewModel
     private var callback: Callbacks? = null;
@@ -40,16 +42,14 @@ class MainFragment :PermissionFragment() {
         injectDependencies()
         if (context is Callbacks) {
             callback = context
+        }
+    }
 
-            // If fine location permission isn't approved, instructs the parent Activity to replace
-            // this fragment with the permission request fragment.
-            if (!context.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                requestFineLocationPermission()
-            } else {
-                onPermissionGrantedAlready()
-            }
+    fun navigateToLocationWeather() {
+        if (getApplicationContext()?.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)!!) {
+            requestFineLocationPermission()
         } else {
-            throw RuntimeException("$context must implement LocationUpdateFragment.Callbacks")
+            onPermissionGrantedAlready()
         }
     }
 
@@ -58,7 +58,7 @@ class MainFragment :PermissionFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = MainFragmentBinding.inflate(inflater, container, false)
+        binding = MainFragment3Binding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -66,29 +66,54 @@ class MainFragment :PermissionFragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpWeatherObserver()
         setUpLocationObserver()
+        setUpSearchView()
+        fetchWeather()
+        setUpNavigateButton()
+    }
+
+    private fun setUpNavigateButton() {
+        binding.navigateImageView.setOnClickListener(View.OnClickListener {
+            navigateToLocationWeather()
+        })
+    }
+
+    private fun fetchWeather() {
+        showProgressView()
+        val sharedPrefs = getApplicationContext()?.let { SharedPrefs.getInstance(it) }
+        val city = sharedPrefs?.getValueOrNull("city")
+        Log.d("Prefs", city.toString())
+        if (city!=null){
+            weatherViewModel.getWeather(city)
+        } else {
+            navigateToLocationWeather();
+        }
+    }
+
+    fun showProgressView(){
+        binding.progressBar.visibility = View.VISIBLE
+        binding.weatherLayout.visibility = View.GONE
+    }
+
+    fun showWeatherView(){
+        binding.progressBar.visibility = View.GONE
+        binding.weatherLayout.visibility = View.VISIBLE
+    }
+
+
+    private fun setUpSearchView() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
 
-
-                val sharedPrefs = SharedPrefs.getInstance((activity?.application as WeatherApplication).applicationContext)
+                val sharedPrefs =
+                    SharedPrefs.getInstance((activity?.application as WeatherApplication).applicationContext)
                 sharedPrefs.setValueOrNull("city", query!!)
-
-
                 if (!query.isNullOrEmpty()) {
-
                     weatherViewModel.getWeather(query)
-
-
-
                     binding.searchView.setQuery("", false)
                     binding.searchView.clearFocus()
                     binding.searchView.isIconified = true
                 }
-
-
                 return true
-
-
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -102,19 +127,23 @@ class MainFragment :PermissionFragment() {
     }
 
     private fun setUpWeatherObserver() {
-        lifecycleScope.launch {
+        val job = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.uiState.collect {
                     when (it) {
                         is UiState.Success -> {
                             updateUI(it.data)
+                            showWeatherView();
                         }
+
                         is UiState.Loading -> {
+                            showProgressView()
                         }
+
                         is UiState.Error -> {
                             //Handle Error
-                            Toast.makeText(activity, it.message, Toast.LENGTH_LONG)
-                                .show()
+                            //callback?.onError(it.message)
+                            showError(it.message)
                         }
 
                         else -> {}
@@ -122,7 +151,9 @@ class MainFragment :PermissionFragment() {
                 }
             }
         }
+
     }
+
 
     private fun setUpLocationObserver() {
         lifecycleScope.launch {
@@ -137,8 +168,8 @@ class MainFragment :PermissionFragment() {
                         }
                         is UiState.Error -> {
                             //Handle Error
-                            Toast.makeText(activity, it.message, Toast.LENGTH_LONG)
-                                .show()
+                           // callback?.onError(it.message)
+                            showError(it.message)
                         }
 
                         else -> {}
@@ -146,6 +177,21 @@ class MainFragment :PermissionFragment() {
                 }
             }
         }
+    }
+
+    fun showError(msg:String) {
+        activity?.let {
+            AlertDialog.Builder(it)
+                .setTitle("Error")
+                .setMessage(msg)
+                .setPositiveButton("RETRY") { _,_ ->
+                    fetchWeather();
+                }.setNegativeButton("CLOSE") { _,_ ->
+                    activity?.finish()
+                }
+                .create().show()
+        }
+
     }
 
     fun updateUI(weatherInfo: WeatherInfo) {
@@ -174,7 +220,7 @@ class MainFragment :PermissionFragment() {
 
     override
     fun onPermissionGranted() {
-        callback?.showMessage("Location permission is  granted")
+        callback?.onError("Location permission is  granted")
         fetchLocationWeather();
     }
 
@@ -185,7 +231,7 @@ class MainFragment :PermissionFragment() {
 
     override
     fun onPermissionDenied() {
-        callback?.showMessage("Location permission is not granted")
+        callback?.onError("Location permission is not granted")
     }
 
     override fun onPermissionGrantedAlready() {
@@ -201,7 +247,17 @@ class MainFragment :PermissionFragment() {
     }
 
     interface Callbacks {
-        fun showMessage(msg:String)
+
+        fun onError(msg:String)
     }
 
+    fun getApplicationContext() : Context? {
+        return (activity?.application as WeatherApplication).applicationContext
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+       // job.cancel() ;
+    }
 }
