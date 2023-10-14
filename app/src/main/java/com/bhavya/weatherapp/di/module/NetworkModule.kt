@@ -13,9 +13,12 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -29,6 +32,17 @@ class NetworkModule (private val application: WeatherApplication){
 
     @Provides
     fun provideBaseUrl(): String = BuildConfig.BASE_URL;
+    @Provides
+    fun provideHttpLogger(): HttpLoggingInterceptor = HttpLoggingInterceptor().setLevel(
+        HttpLoggingInterceptor.Level.BODY)
+    @Provides
+    fun provideOKHttp(logger: HttpLoggingInterceptor): OkHttpClient {
+        val okHttpClient = OkHttpClient.Builder()
+        with(okHttpClient) {
+            addInterceptor(logger)
+        }
+        return okHttpClient.build()
+    }
 
     @Singleton
     @Provides
@@ -37,7 +51,8 @@ class NetworkModule (private val application: WeatherApplication){
     @Singleton
     @Provides
     fun provideRetrofit(baseUrl: String, gsonConverterFactory: GsonConverterFactory) : Retrofit {
-        return Retrofit.Builder().addConverterFactory(gsonConverterFactory).baseUrl(baseUrl).build();
+        return Retrofit.Builder().addConverterFactory(gsonConverterFactory).baseUrl(baseUrl).client(provideOKHttp(
+            provideHttpLogger())).build();
     }
 
     @Singleton

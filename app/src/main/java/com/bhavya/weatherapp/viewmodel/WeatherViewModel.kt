@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import javax.inject.Inject
 
 class WeatherViewModel @Inject constructor(private val weatherRepository : WeatherRepository, private val locationApi: LocationApi) : ViewModel() {
@@ -28,7 +29,7 @@ class WeatherViewModel @Inject constructor(private val weatherRepository : Weath
                     _uiState.value = UiState.Error(e.toString())
                 }
                 .collect{
-                    _uiState.value = UiState.Success(it)
+                    onResponseCollected(it)
                 }
         }
     }
@@ -40,8 +41,20 @@ class WeatherViewModel @Inject constructor(private val weatherRepository : Weath
                     _uiState.value = UiState.Error(e.toString())
                 }
                 .collect{
-                    _uiState.value = UiState.Success(it)
+                    onResponseCollected(it)
                 }
+        }
+    }
+
+    private fun onResponseCollected(it: Response<WeatherInfo>) {
+        if (it.isSuccessful) {
+            val body = it.body();
+            body?.let { model ->
+                model.currentTime = System.currentTimeMillis()
+                _uiState.value = UiState.Success(model)
+            }
+        } else {
+            _uiState.value = UiState.Error(it.message())
         }
     }
 

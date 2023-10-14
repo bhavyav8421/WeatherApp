@@ -15,14 +15,14 @@ interface WeatherService {
                                       @Query("lon")
                                       lon: String,
                                       @Query("appid")
-                                      appid: String = BuildConfig.API_KEY) : WeatherInfo
+                                      appid: String = BuildConfig.API_KEY) : Response<WeatherInfo>
 
     @GET("weather?")
     suspend fun getCurrentWeatherByCity(
         @Query("q")
         city: String,
         @Query("appid")
-        appid: String = BuildConfig.API_KEY) : WeatherInfo
+        appid: String = BuildConfig.API_KEY) :Response<WeatherInfo>
 
     @GET("forecast?")
     suspend fun getForecastByCity(
