@@ -7,7 +7,7 @@ import androidx.databinding.DataBindingUtil
 import com.bhavya.weatherapp.R
 import com.bhavya.weatherapp.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() , MainFragment.Callbacks, ErrorFragment.RetryCallback {
+class MainActivity : AppCompatActivity() , MainFragment.Callbacks{
 
     private lateinit var binding: ActivityMainBinding;
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,22 +19,6 @@ class MainActivity : AppCompatActivity() , MainFragment.Callbacks, ErrorFragment
         }
     }
 
-
-    override fun onError(msg:String) {
-        Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
-//        val fragment = ErrorFragment.newInstance(msg)
-//        supportFragmentManager
-//            .beginTransaction()
-//            .replace(R.id.fragment_container, fragment)
-//            .addToBackStack(null)
-//            .commit()
-    }
-
-    override fun onRetry() {
-        launchWeatherScreen()
-
-    }
-
     private fun launchWeatherScreen() {
         val fragment = MainFragment.newInstance()
 
@@ -43,6 +27,10 @@ class MainActivity : AppCompatActivity() , MainFragment.Callbacks, ErrorFragment
             .replace(R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onError(msg: String) {
+        Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
     }
 
 

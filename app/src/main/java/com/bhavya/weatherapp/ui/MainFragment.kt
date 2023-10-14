@@ -23,6 +23,7 @@ import com.bhavya.weatherapp.viewmodel.WeatherViewModel
 import com.bumptech.glide.Glide
 import com.example.weatherapp.model.WeatherInfo
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import util.SharedPrefs
 import util.hasPermission
@@ -46,6 +47,7 @@ class MainFragment :PermissionFragment(){
     }
 
     fun navigateToLocationWeather() {
+        showProgressView()
         if (getApplicationContext()?.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)!!) {
             requestFineLocationPermission()
         } else {
@@ -129,7 +131,7 @@ class MainFragment :PermissionFragment(){
     private fun setUpWeatherObserver() {
         val job = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                weatherViewModel.uiState.collect {
+                weatherViewModel.uiState.collectLatest {
                     when (it) {
                         is UiState.Success -> {
                             updateUI(it.data)

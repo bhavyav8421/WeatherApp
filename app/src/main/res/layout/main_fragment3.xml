@@ -9,7 +9,6 @@
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_weight="1"
-            android:scrollbarSize="50dp"
             android:text="Fetching weather data.."
             android:layout_width="match_parent"
             android:layout_height="match_parent"></ProgressBar>
@@ -17,7 +16,7 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/weatherLayout"
-    android:visibility="gone"
+    android:visibility="visible"
     android:layout_weight="1" android:padding="@dimen/_16dp"
 
     android:layout_height="match_parent" android:layout_width="match_parent">
@@ -163,7 +162,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Wind"
+        android:text="Pressure"
         android:textColor="@android:color/white"
         android:textSize="@dimen/_20sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -184,6 +183,7 @@
         android:id="@+id/sunriseTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
         android:layout_marginTop="@dimen/_10dp"
         android:drawableLeft="@drawable/sunrise"
         android:gravity="center"
@@ -192,6 +192,7 @@
 
     <TextView
         android:id="@+id/sunsetTextView"
+        android:textColor="@android:color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_10dp"

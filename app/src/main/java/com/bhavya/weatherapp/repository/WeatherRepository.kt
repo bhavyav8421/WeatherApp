@@ -16,13 +16,17 @@ import javax.inject.Inject
 class WeatherRepository @Inject constructor(private val weatherService : WeatherService){
     fun getWeatherData(lat: String, long:String): Flow<WeatherInfo> {
         return flow {
-            emit(weatherService.getCurrentWeatherData(lat,long))
+            val currentWeatherData = weatherService.getCurrentWeatherData(lat, long);
+            currentWeatherData.currentTime = System.currentTimeMillis()
+            emit(currentWeatherData)
         }
     }
 
     fun getWeatherData(cityName: String): Flow<WeatherInfo> {
         return flow {
-            emit(weatherService.getCurrentWeatherByCity(cityName))
+            val currentWeatherData = weatherService.getCurrentWeatherByCity(cityName);
+            currentWeatherData.currentTime = System.currentTimeMillis()
+            emit(currentWeatherData)
         }
     }
 

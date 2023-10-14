@@ -36,4 +36,6 @@ data class WeatherInfo(
     val name: String,
     @SerializedName("timezone")
     val timezone: Int,
+    @SerializedName("current")
+    var currentTime: Long,
     )
