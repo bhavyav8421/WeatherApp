@@ -8,6 +8,7 @@ import com.bhavya.weatherapp.repository.WeatherRepository
 import com.bhavya.weatherapp.viewmodel.WeatherViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.Component
+import util.DispatcherProvider
 import javax.inject.Singleton
 
 @Singleton
@@ -24,5 +25,7 @@ interface ApplicationComponent {
     fun getLocationProviderClient(): FusedLocationProviderClient
 
     fun getLocationApi(): LocationApi
+
+    fun getDispatchProvider(): DispatcherProvider
 
 }

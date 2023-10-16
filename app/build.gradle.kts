@@ -45,6 +45,9 @@ android {
 }
 
 dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     val lifecycle_version = "2.6.2"
     val room_version = "2.5.2"
     val coroutine_version = "1.7.3"
@@ -80,12 +83,34 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     testImplementation("androidx.arch.core:core-testing:2.1.0")*/
 
-    testImplementation("junit:junit:4.13.2")
+    /*testImplementation("junit:junit:4.13.2")
     testImplementation("org.mockito:mockito-core:3.4.6")
     testImplementation("androidx.arch.core:core-testing:2.1.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")*/
+
+    /*testImplementation("androidx.arch.core:core-testing:2.2.0")
+    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.44.2")
+    testImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:core:1.5.0")
+
+    testImplementation("org.mockito:mockito-core:5.0.0")
+    androidTestImplementation("org.mockito:mockito-android:3.10.0")*/
+
+
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:3.4.6")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    testImplementation("app.cash.turbine:turbine:1.0.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
 
 
 

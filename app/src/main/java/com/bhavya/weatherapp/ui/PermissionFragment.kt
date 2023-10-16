@@ -10,6 +10,9 @@ abstract class PermissionFragment:Fragment() {
     val TAG = "PermissionFragment"
     private val REQUEST_FINE_LOCATION_PERMISSIONS_REQUEST_CODE = 34
 
+    /**
+     * Request permission from the user
+     */
     fun requestFineLocationPermission() {
         val permissionApproved =
             context?.hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) ?: return

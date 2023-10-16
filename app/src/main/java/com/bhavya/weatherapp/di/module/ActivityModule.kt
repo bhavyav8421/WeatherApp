@@ -10,6 +10,7 @@ import com.bhavya.weatherapp.viewmodel.ViewModelProviderFactory
 import com.bhavya.weatherapp.viewmodel.WeatherViewModel
 import dagger.Module
 import dagger.Provides
+import util.DispatcherProvider
 
 @Module
 class ActivityModule(private val activity: AppCompatActivity) {
@@ -20,11 +21,14 @@ class ActivityModule(private val activity: AppCompatActivity) {
         return activity
     }
 
+    /**
+     * Provides view model object activity and main fragment
+     */
     @Provides
-    fun provideWeatherViewModel(repo: WeatherRepository, locationApi:LocationApi): WeatherViewModel {
+    fun provideWeatherViewModel(repo: WeatherRepository, locationApi:LocationApi, dispatcherProvider: DispatcherProvider): WeatherViewModel {
         return ViewModelProvider(activity,
             ViewModelProviderFactory(WeatherViewModel::class) {
-                WeatherViewModel(repo,locationApi )
+                WeatherViewModel(repo,locationApi, dispatcherProvider)
             })[WeatherViewModel::class.java]
     }
 

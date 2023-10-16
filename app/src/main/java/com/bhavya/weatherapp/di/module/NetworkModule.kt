@@ -18,6 +18,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
+import util.DefaultDispatcherProvider
+import util.DispatcherProvider
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -30,11 +32,22 @@ class NetworkModule (private val application: WeatherApplication){
         return application
     }
 
+    /**
+     * Provides base url for the http client
+     */
     @Provides
     fun provideBaseUrl(): String = BuildConfig.BASE_URL;
+
+    /**
+     * Provides httpLogInterceptor
+     */
     @Provides
     fun provideHttpLogger(): HttpLoggingInterceptor = HttpLoggingInterceptor().setLevel(
         HttpLoggingInterceptor.Level.BODY)
+
+    /**
+     * Provides http client object
+     */
     @Provides
     fun provideOKHttp(logger: HttpLoggingInterceptor): OkHttpClient {
         val okHttpClient = OkHttpClient.Builder()
@@ -44,10 +57,23 @@ class NetworkModule (private val application: WeatherApplication){
         return okHttpClient.build()
     }
 
+
+    @Singleton
+    @Provides
+    fun provideDispatcherProvider(): DispatcherProvider {
+        return DefaultDispatcherProvider();
+    }
+
+    /**
+     * Provides gson factor object to convert json string to object
+     */
     @Singleton
     @Provides
     fun provideGsonConverterFactory(): GsonConverterFactory = GsonConverterFactory.create()
 
+    /**
+     * Provides retrofit object
+     */
     @Singleton
     @Provides
     fun provideRetrofit(baseUrl: String, gsonConverterFactory: GsonConverterFactory) : Retrofit {
@@ -55,12 +81,18 @@ class NetworkModule (private val application: WeatherApplication){
             provideHttpLogger())).build();
     }
 
+    /**
+     * Provides weather service instance to invoke weather api
+     */
     @Singleton
     @Provides
     fun provideWeatherService(retrofit: Retrofit) : WeatherService {
         return retrofit.create(WeatherService::class.java)
     }
 
+    /**
+     * Provides Location instance to capture geo coodinates of user
+     */
     @Singleton
     @Provides
     fun provideLocationApi(locationProvider: FusedLocationProviderClient): LocationApi{
